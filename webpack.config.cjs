@@ -1,6 +1,9 @@
 const path = require('path');
 module.exports = {
-  entry: './src/main.ts',
+  entry: {
+    bundle: './src/main.ts',
+    worker: './src/worker.ts'
+  },
   devtool: 'inline-source-map',
   devServer: {
     static: './dist'
@@ -18,7 +21,7 @@ module.exports = {
     extensions: [ '.tsx', '.ts', '.js' ]
   },
   output: {
-    filename: 'bundle.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'dist')
   }
 };

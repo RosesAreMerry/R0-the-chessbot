@@ -2,9 +2,25 @@
 <html lang="en">
 <head>
   <link href="index.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" type="text/css" href="chessground.css"/>
+  <link rel="stylesheet" type="text/css" href="chessground.brown.css"/>
+  <link rel="stylesheet" type="text/css" href="chessground.cburnett.css"/>
 </head>
 <body>
-  <canvas id="game" width="500" height="500"/>
+  <div id="boardholder">
+    <div class="chessground" id="board-1"></div>
+    <div class="botspace">
+      <div class="chess-bot">
+        <div id="botface">
+          <div id="frame"></div>
+          <image id="face" src="./Chessbot Faces/happy.svg"/>
+          <image id="scanlines"src="scanlines.svg"/>
+        </div>
+      </div>
+      <div id="messages">
+      </div>
+    </div>
+  </div>
   <script src="bundle.js"></script>
 </body>
 </html>
