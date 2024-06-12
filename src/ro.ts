@@ -68,7 +68,9 @@ export function talk(message: string) {
     setTimeout(() => {
       setFaceAsMood()
       resolve()
-      clearInterval(interval)
+      setTimeout(() => {
+        clearInterval(interval)
+      }, 2000)
     }, message.length * messageDelay)
   })
 }
