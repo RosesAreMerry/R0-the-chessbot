@@ -115,8 +115,12 @@ worker.onmessage = (e) => {
     Ro.talk("Queen behavior.")
   } else if (data.score - lastScore < -10) {
     Ro.talk("lol, get wrecked :3")
+  } else if (data.score - lastScore < -5) {
+    Ro.talk("You're getting worse at this. What's up with that?")
   } else if (data.score - lastScore > 10) {
     Ro.talk("...Fuck you")
+  } else if (data.score - lastScore > 5) {
+    Ro.talk("Ugh, you've put me in a tough position :(")
   } else if (move.captured) {
     Ro.talk("lmao, imagine losing pieces. Couldn't be me >:)")
   }

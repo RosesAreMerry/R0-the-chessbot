@@ -51,12 +51,14 @@ export function talk(message: string) {
     if (i < message.length) {
       messageElement.innerHTML += message[i]
       i++
-      if (i % 3 == 0 && i < message.length) {
+      if (i % 5 == 0 && i < message.length) {
         face.src = talkingFaces[Math.floor(message.charCodeAt(i) % talkingFaces.length)]
-        // play talking sound
-        const sound = new Audio(talkingSoundPath + (message.charCodeAt(i) % 25 + 1).toString().padStart(2, "0") + ".wav")
-        sound.play()
       }
+      // play talking sound
+      const sound = new Audio(talkingSoundPath + (message.charCodeAt(i) % 25 + 1).toString().padStart(2, "0") + ".wav")
+      // set volume to 0.5
+      sound.volume = 0.3
+      sound.play()
     }
   }, messageDelay)
 
