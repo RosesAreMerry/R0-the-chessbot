@@ -1,24 +1,32 @@
 <!doctype html>
 <html lang="en">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <head>
-  <link href="index.css" rel="stylesheet" type="text/css">
   <link rel="stylesheet" type="text/css" href="chessground.css"/>
   <link rel="stylesheet" type="text/css" href="chessground.brown.css"/>
   <link rel="stylesheet" type="text/css" href="chessground.cburnett.css"/>
+  <link href="index.css" rel="stylesheet" type="text/css">
 </head>
 <body>
   <div id="boardholder">
     <div class="chessground" id="board-1"></div>
     <div class="botspace">
-      <div class="chess-bot">
-        <div id="botface">
+      <div class="chess-bot-container">
+				<div class="chess-bot"> 
+					<div id="glow">
+						<image id="scanlines" src="./scanlines.svg">
+						<image id="face" src="./Chessbot Faces/happy.svg">
+						</image>
+					</div>
+				</div>
+				
+          <!-- <div id="glow"></div>
           <div id="frame"></div>
-          <image id="face" src="./Chessbot Faces/happy.svg"/>
-          <image id="scanlines"src="scanlines.svg"/>
-        </div>
+          <image id="face" src="./Chessbot Faces/happy.svg">
+						<image id="scanlines"src="scanlines.svg"></image>
+					</image> -->
       </div>
-      <div id="messages">
-      </div>
+      <div id="messages"></div>
     </div>
   </div>
   <script src="bundle.js"></script>

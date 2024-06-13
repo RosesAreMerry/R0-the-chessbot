@@ -7,71 +7,69 @@ body {
   display: flex;
 }
 
+
 .botspace {
   background-color: #1e2129;
 }
 
+.chess-bot-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
 .chess-bot {
-  width: 290px;
-  height: 217.5px;
-  overflow: hidden;
-  cursor: default;
   margin-left: auto;
   margin-right: auto;
+  height: 20vh;
+  aspect-ratio: 4/3;
+  background-color: #000000;
+  border-radius: 10px;
 }
 
-#botface {
+#glow {
+  margin: 20px;
+  width: calc(100% - 40px);
+  height: calc(100% - 40px);
+  box-shadow: 0 0 50px 10px #9f6aa4;
   position: relative;
-  height: 187.5px;
-  padding: 10px;
-  margin: 10px;
-  border-radius: 10px;
   overflow: hidden;
-}
-
-#frame {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 250px;
-  height: 187.5px;
-  border-radius: 10px;
-  border-color: #644667;
-  border-style: solid;
-  border-width: 10px;
-  z-index: 1;
 }
 
 #face {
-  width: 250px;
-  position: absolute;
-  top: 10;
-  left: 10;
-  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: contrast(2) saturate(0.75);
 }
 
 #scanlines {
+  margin-left: -5%;
+  width: 110%;
+  height: 210%;
   position: absolute;
-  top: 10;
-  left: 10;
-  width: 250px;
-  height: 700px;
+  z-index: 1;
   object-fit: cover;
-  overflow: hidden;
-  opacity: 0.5;
-  animation: scan 20s linear infinite;
+  animation: scan 10s linear infinite;
+  filter: blur(3px);
 }
 
 #messages {
   display: flex;
-  width: 500px;
+  width: 30vw;
   flex-direction: column;
-  justify-content: center;
   align-items: start;
   margin-top: 20px;
   margin-left: 20px;
-  font-family: monospace;
+  font-family: "Consolas", monospace;
   user-select: none;
+  overflow-y: scroll;
+}
+
+#messages::-webkit-scrollbar {
+  width: 10px;
 }
 
 #messages li {
@@ -85,11 +83,41 @@ body {
   color: #f8aeff;
 }
 
+
+@media screen and (max-width: 1200px) and (orientation: portrait) {
+  #boardholder {
+    align-items: center;
+    flex-direction: column;
+  }
+  .chess-bot-container {
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .cg-wrap {
+    width: 75vw;
+    height: 75vw;
+    position: relative;
+    display: block;
+  }
+  .botspace {
+    width: 75vw;
+  }
+  #messages {
+    width: auto;
+    flex: 1;
+    flex-direction: column;
+    padding-bottom: 20px;
+  }
+
+  
+}
+
 @keyframes scan {
   0% {
-    transform: translateY(-450px);
+    transform: translateY(-50%);
   }
   100% {
-    transform: translateY(0px);
+    transform: translateY(0%);
   }
 }

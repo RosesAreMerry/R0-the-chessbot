@@ -123,6 +123,8 @@ worker.onmessage = (e) => {
     Ro.talk("Ugh, you've put me in a tough position :(")
   } else if (move.captured) {
     Ro.talk("lmao, imagine losing pieces. Couldn't be me >:)")
+  } else {
+    Ro.talk("Your turn!")
   }
 
   if (data.score > 10) {

@@ -16,7 +16,7 @@ export function buildMessages() {
   })
 }
 
-const messageDelay = 30
+const messageDelay = 80
 
 const happyFace = "./Chessbot Faces/happy.svg"
 const angryFace = "./Chessbot Faces/angry.svg"
@@ -43,15 +43,17 @@ export function talk(message: string) {
   const messageElement = document.createElement('li')
   messageElement.innerHTML = `<span>R0</span>: `
   chat.appendChild(messageElement)
+  chat.scrollTop = chat.scrollHeight - chat.clientHeight;
 
   // Add the message to the chat one letter at a time
   let i = 0;
   const face = document.getElementById('face') as HTMLImageElement
   const interval = setInterval(() => {
+    chat.scrollTop = chat.scrollHeight - chat.clientHeight;
     if (i < message.length) {
       messageElement.innerHTML += message[i]
       i++
-      if (i % 5 == 0 && i < message.length) {
+      if (i % 2 == 0 && i < message.length) {
         face.src = talkingFaces[Math.floor(message.charCodeAt(i) % talkingFaces.length)]
       }
       if (i < message.length) {
@@ -67,7 +69,9 @@ export function talk(message: string) {
   return new Promise<void>((resolve) => {
     setTimeout(() => {
       setFaceAsMood()
-      resolve()
+      setTimeout(() => {
+        resolve()
+      }, messageDelay * 10)
       setTimeout(() => {
         clearInterval(interval)
       }, 2000)
