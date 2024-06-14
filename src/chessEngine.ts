@@ -17,7 +17,7 @@ export function determineMove(chess: Chess) {
     let val = minimax(chess, 3, !max, -Infinity, Infinity);
     if (move.san == "O-O" || move.san == "O-O-O") {
       // castling is a good move, so we add a little bonus
-      val -= 5;
+      val -= 2;
     }
     if (max && val > bestMoveVal || !max && val < bestMoveVal) {
       bestMoveVal = val;
