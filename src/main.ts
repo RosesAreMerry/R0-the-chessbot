@@ -8,7 +8,7 @@ import Ro from "./ro"
 
 
 
-const chess = new Chess();
+const chess = new Chess("rnbqk2r/pppp2pp/4pp1n/2b5/4P3/3P1P2/PPP3PP/RNBQKBNR w KQkq - 1 5");
 
 const cg = Chessground(document.getElementById('board-1'), {
   movable: {
@@ -36,47 +36,50 @@ function wait(millis: number) {
   return new Promise(resolve => setTimeout(resolve, millis));
 }
 
+let waitingForPromotion: {orig: string, dest: string} = null;
+
 function playAITurn(cg: Api) {
   return (orig: string, dest: string) => {
-    const move = chess.move({from: orig, to: dest})
+    const moves = chess.moves({verbose: true}).filter(m => m.from === orig && m.to === dest);
 
-    if (chess.isCheckmate()) {
-      aiLossScene();
-    } else if (chess.isDraw()) {
-      drawScene();
-    } else if (chess.isGameOver()) {
-      gameOverScene();
-    } else if (chess.inCheck()) {
-      Ro.talk("Are you trying to checkmate me? >:( That's so mean. You should be ashamed.")
-    } else if (move.promotion) {
-      Ro.talk("Uh oh. That's not good.")
-    } else if (move.san === "O-O" || move.san === "O-O-O") {
-      Ro.talk("I've heard that's a good move.")
-    } else if (move.captured) {
-      Ro.talk("Ugh >:( You suck.")
+    let move = moves[0];
+    if (move.promotion) {
+      waitingForPromotion = {orig: orig, dest: dest};
+      Ro.talk("What piece would you like to promote to? Type it in the chat!")
+      return;
     }
 
-    console.log("Worker sending chess ", chess);
-    if (!chess.isGameOver()) {
-      Ro.think();
-      worker.postMessage(chess.fen());
-    }
-    // setTimeout(() => {
-    //   chess.move({from: orig, to: dest})
-      
-    //   const move = determineMove(chess);
+    humanMove(move);
+  }
+}
+
+function humanMove(move: Move) {
+  // we are getting this move from chessground, it's already been validated
+  // if its a promotion we already validated and asked the user for the promotion
+  // so we can just make the move
+  chess.move(move.san);
   
-    //   chess.move(move.san);
-    //   cg.move(move.from, move.to);
-    //   cg.set({
-    //     turnColor: toColor(chess),
-    //     movable: {
-    //       color: toColor(chess),
-    //       dests: toDests(chess)
-    //     }
-    //   })
-    //   cg.playPremove();
-    // }, 200)
+
+  // Ai dialog for user moves
+  if (chess.isCheckmate()) {
+    aiLossScene();
+  } else if (chess.isDraw()) {
+    drawScene();
+  } else if (chess.isGameOver()) {
+    gameOverScene();
+  } else if (chess.inCheck()) {
+    Ro.talk("Are you trying to checkmate me? >:( That's so mean. You should be ashamed.")
+  } else if (move.promotion) {
+    Ro.talk("Uh oh. That's not good.")
+  } else if (move.san === "O-O" || move.san === "O-O-O") {
+    Ro.talk("I've heard that's a good move.")
+  } else if (move.captured) {
+    Ro.talk("Ugh >:( You suck.")
+  }
+
+  if (!chess.isGameOver()) {
+    Ro.think();
+    worker.postMessage(chess.fen());
   }
 }
 
@@ -173,6 +176,96 @@ function aiLossScene() {
     })
   })
 }
+
+const chat = document.getElementById('chat') as HTMLInputElement
+
+let numberOfChats = 1;
+
+chat.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    if (waitingForPromotion) {
+      const promotion = chat.value.toLowerCase();
+      let promLetter = "";
+      switch (promotion) {
+        case "queen":
+        case "q":
+          Ro.talk("Hmm, that's not good for me.")
+          promLetter = "q";
+          break;
+        case "rook":
+        case "r":
+          Ro.talk("You know the queen is the best piece right? Why would you choose the rook?")
+          promLetter = "r";
+          break;
+        case "bishop":
+        case "b":
+          Ro.talk("You know the queen is the best piece right? Why would you choose the bishop?")
+          promLetter = "b";
+          break;
+        case "knight":
+        case "n":
+          Ro.talk("Wow, big brain over here thinks they can outsmart me by choosing the knight. Pathetic.")
+          promLetter = "n";
+          break;
+        case "king":
+        case "k":
+          Ro.talk("You can't promote to a king, you idiot.")
+          break;
+        case "pawn":
+        case "p":
+          Ro.talk("... You're an idiot.")
+          break;
+        case "rose":
+          Ro.talk("mm, no, she sucks at chess. I'm better than her.")
+          break;
+        case "r0":
+          Ro.talk("Aww, you're so sweet. But I can't let you do that.")
+          break;
+        default:
+          if (promotion.length === 1) {
+            Ro.talk("That's... not a piece.").then(() => {
+              Ro.talk("Dumbass.")
+            })
+          } else {
+            Ro.talk("I don't know if you're trying to talk to me, but I'm basically a big switch statement, not magic or a GPT. So, uh, you've hit my default case. Congrats.")
+          }
+          break;
+        }
+        if (promLetter != "") {
+          chess.move({
+            from: waitingForPromotion.orig,
+            to: waitingForPromotion.dest,
+            promotion: promLetter
+          })
+          cg.set({
+            fen: chess.fen()
+          })
+          
+          if (!chess.isGameOver()) {
+            Ro.think();
+            worker.postMessage(chess.fen());
+          }
+        }
+    } else {
+      switch (numberOfChats) {
+        case 1:
+          Ro.talk("I'm not a GPT or magic. That's just there for chosing promotions.")
+          break;
+        case 2:
+          Ro.talk("I can't tell what you're saying, so I don't know what you're trying to do here.")
+          break;
+        case 4:
+          Ro.talk("In case you're wondering, yes I did make the last one long to be annoying :)")
+          break
+        default:
+          Ro.talk("Woah, it's just like those things in video games where you talk to something three times and then it repeats its last dialogue!")
+          break
+      }
+      numberOfChats++;
+    }
+    chat.value = "";
+  }
+})
 
 function aiWinScene() {
   Ro.talk("Hell yeah! Fuck you!! I'm the fucking greatest!").then(() => {

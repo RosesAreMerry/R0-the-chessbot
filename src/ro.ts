@@ -16,7 +16,7 @@ export function buildMessages() {
   })
 }
 
-const messageDelay = 80
+const messageDelay = 50
 
 const happyFace = "./Chessbot Faces/happy.svg"
 const angryFace = "./Chessbot Faces/angry.svg"
@@ -30,6 +30,10 @@ const talkingFaces = [
 
 const talkingSoundPath = "./Chessbot Voice/ro-chatter-"
 
+// The messages lined up to be spoken;
+const messageQueue: string[] = [];
+let isSpeaking = false;
+
 /**
  * Has R0 speak a message.
  * @param message The message to speak
@@ -38,6 +42,12 @@ const talkingSoundPath = "./Chessbot Voice/ro-chatter-"
 export function talk(message: string) {
   messages.push(message)
 
+  if (isSpeaking) {
+    messageQueue.push(message)
+    return
+  }
+
+  isSpeaking = true
   // Add the message to the chat
   const chat = document.getElementById('messages')
   const messageElement = document.createElement('li')
@@ -55,8 +65,6 @@ export function talk(message: string) {
       i++
       if (i % 2 == 0 && i < message.length) {
         face.src = talkingFaces[Math.floor(message.charCodeAt(i) % talkingFaces.length)]
-      }
-      if (i < message.length) {
         // play talking sound
         const sound = new Audio(talkingSoundPath + (message.charCodeAt(i) % 25 + 1).toString().padStart(2, "0") + ".wav")
         // set volume to 0.5
@@ -71,7 +79,11 @@ export function talk(message: string) {
       setFaceAsMood()
       setTimeout(() => {
         resolve()
-      }, messageDelay * 10)
+        isSpeaking = false
+        if (messageQueue.length > 0) {
+          talk(messageQueue.shift())
+        }
+      }, messageDelay * 5)
       setTimeout(() => {
         clearInterval(interval)
       }, 2000)
