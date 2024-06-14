@@ -8,7 +8,9 @@ import Ro from "./ro"
 
 
 
-const chess = new Chess("rnbqk2r/pppp2pp/4pp1n/2b5/4P3/3P1P2/PPP3PP/RNBQKBNR w KQkq - 1 5");
+// const chess = new Chess("rnbqk2r/pppp2pp/4pp1n/2b5/4P3/3P1P2/PPP3PP/RNBQKBNR w KQkq - 1 5");
+
+const chess = new Chess();
 
 const cg = Chessground(document.getElementById('board-1'), {
   movable: {
